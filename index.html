@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>L'Oréal Routine Builder — Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <h1>L'ORÉAL</h1>
+      <div class="subtitle">Routine Builder</div>
+    </div>
+    <div class="controls">
+      <input id="searchInput" placeholder="Search products..." aria-label="Search products" />
+      <select id="categoryFilter" aria-label="Category filter">
+        <option value="all">All Categories</option>
+      </select>
+      <button id="rtlToggle" title="Toggle RTL">RTL</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="product-area">
+      <div id="productGrid" class="grid" aria-live="polite"></div>
+      <div class="more"><a href="#" id="showMore">Show More Products</a></div>
+    </section>
+
+    <aside class="selected-area" aria-label="Selected products">
+      <h2>Selected Products</h2>
+      <div id="selectedList" class="selected-list"></div>
+      <div class="selected-actions">
+        <button id="generateBtn" class="primary">Generate Routine</button>
+        <button id="clearBtn" class="secondary">Clear All</button>
+      </div>
+    </aside>
+
+    <section class="chat-area" aria-label="Chat with routine advisor">
+      <h2>About Your Routine</h2>
+      <div id="chatWindow" class="chat-window" role="log" aria-live="polite"></div>
+      <form id="chatForm" class="chat-form">
+        <input id="chatInput" placeholder="Ask about your routine..." aria-label="Ask about your routine" />
+        <button type="submit" title="Send">➤</button>
+      </form>
+    </section>
+  </main>
+
+  <template id="productCardTemplate">
+    <div class="product-card">
+      <div class="thumb"></div>
+      <div class="meta">
+        <div class="brand-name"></div>
+        <div class="product-name"></div>
+        <div class="product-desc-toggle" role="button" tabindex="0" aria-pressed="false">Details</div>
+      </div>
+    </div>
+  </template>
+
+  <div id="modal" class="modal" aria-hidden="true" role="dialog">
+    <div class="modal-content">
+      <button id="modalClose" class="modal-close" aria-label="Close">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // Cloudflare Worker endpoint provided by you
+    const WORKER_URL = "https://openaiapikey.hangqi39.workers.dev";
+    window.__APP_CONFIG__ = { workerUrl: WORKER_URL };
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

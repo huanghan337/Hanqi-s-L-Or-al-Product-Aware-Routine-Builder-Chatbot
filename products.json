@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cerave-foaming-cleanser",
+    "brand": "CeraVe",
+    "name": "Foaming Facial Cleanser",
+    "category": "Cleanser",
+    "description": "A gentle foaming cleanser to remove dirt and oil while preserving the skin barrier.",
+    "keywords": [
+      "foam",
+      "cleanser",
+      "oil control"
+    ]
+  },
+  {
+    "id": "cerave-hydrating-cleanser",
+    "brand": "CeraVe",
+    "name": "Hydrating Facial Cleanser",
+    "category": "Cleanser",
+    "description": "Hydrating, non-foaming cleanser suitable for dry and normal skin.",
+    "keywords": [
+      "hydrating",
+      "gentle",
+      "dry skin"
+    ]
+  },
+  {
+    "id": "cerave-moisturizing-cream",
+    "brand": "CeraVe",
+    "name": "Moisturizing Cream",
+    "category": "Moisturizer",
+    "description": "Rich, long-lasting moisturizer for very dry skin, with ceramides.",
+    "keywords": [
+      "moisturizer",
+      "ceramides",
+      "dry"
+    ]
+  },
+  {
+    "id": "loreal-sunscreen-spf30",
+    "brand": "L'Oreal Paris",
+    "name": "AM Facial Moisturizing Lotion SPF 30",
+    "category": "Sunscreen",
+    "description": "Daily facial moisturizer with SPF 30 to protect skin from UV damage.",
+    "keywords": [
+      "spf",
+      "sunscreen",
+      "am"
+    ]
+  },
+  {
+    "id": "garnier-resurfacing-serum",
+    "brand": "Garnier",
+    "name": "Resurfacing Retinol Serum",
+    "category": "Serum",
+    "description": "Lightweight retinol serum to help improve skin texture and tone.",
+    "keywords": [
+      "retinol",
+      "serum",
+      "texture"
+    ]
+  },
+  {
+    "id": "lancome-night-lotion",
+    "brand": "Lancôme",
+    "name": "PM Facial Moisturizing Lotion",
+    "category": "Moisturizer",
+    "description": "Night-time lotion with reparative complex to hydrate while you sleep.",
+    "keywords": [
+      "pm",
+      "night",
+      "repair"
+    ]
+  }
+]
