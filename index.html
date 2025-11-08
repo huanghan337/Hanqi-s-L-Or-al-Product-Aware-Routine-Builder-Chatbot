@@ -1,74 +1,96 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>L'Oréal Routine Builder — Demo</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Routine Builder</title>
+  <style>
+    /* Minimal styles so the UI is usable when replacing file */
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:16px}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .controls{display:flex;gap:8px;align-items:center}
+    #productGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:12px}
+    .product-card{border:1px solid #ddd;padding:8px;border-radius:6px;cursor:pointer;display:flex;gap:8px;align-items:center}
+    .product-card.selected{outline:2px solid #2b90ff}
+    .thumb{width:48px;height:48px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:#f2f2f2;font-weight:700}
+    .meta{flex:1}
+    #selectedList{margin-top:12px;border-top:1px dashed #ddd;padding-top:12px}
+    .chat-bubble{padding:8px;border-radius:8px;margin-bottom:8px;max-width:80%}
+    .chat-bubble.user{background:#e6f7ff;margin-left:auto}
+    .chat-bubble.assistant{background:#f7f7f7}
+    #chatWindow{height:200px;overflow:auto;border:1px solid #eee;padding:8px;border-radius:6px;background:#fff}
+    #modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.5)}
+    #modal[aria-hidden="false"]{display:flex}
+    #modalBody{background:#fff;padding:16px;border-radius:8px;max-width:640px;width:90%}
+    #modalClose{margin-left:8px}
+    .muted{color:#777}
+  </style>
+
+  <!--
+    Runtime configuration injection (edit this per-environment; no trailing slash)
+    Set workerUrl to your Cloudflare Worker endpoint. This file exposes the same
+    config under window.APP_CONFIG and window.__APP_CONFIG__ for compatibility.
+  -->
+  <script>
+    (function(){
+      var cfg = {
+        // Production worker URL (ensure https:// and no trailing slash)
+        workerUrl: "https://openaiapikey.hangqi39.workers.dev",
+        // optional runtime flags
+        enableWebSearch: false
+      };
+      window.APP_CONFIG = cfg;
+      window.__APP_CONFIG__ = cfg;
+    })();
+  </script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand">
-      <h1>L'ORÉAL</h1>
-      <div class="subtitle">Routine Builder</div>
-    </div>
-    <div class="controls">
-      <input id="searchInput" placeholder="Search products..." aria-label="Search products" />
-      <select id="categoryFilter" aria-label="Category filter">
-        <option value="all">All Categories</option>
-      </select>
+  <header>
+    <h1>Routine Builder</h1>
+    <div class="controls" style="margin-left:auto">
       <button id="rtlToggle" title="Toggle RTL">RTL</button>
     </div>
   </header>
 
-  <main class="container">
-    <section class="product-area">
-      <div id="productGrid" class="grid" aria-live="polite"></div>
-      <div class="more"><a href="#" id="showMore">Show More Products</a></div>
-    </section>
-
-    <aside class="selected-area" aria-label="Selected products">
-      <h2>Selected Products</h2>
-      <div id="selectedList" class="selected-list"></div>
-      <div class="selected-actions">
-        <button id="generateBtn" class="primary">Generate Routine</button>
-        <button id="clearBtn" class="secondary">Clear All</button>
-      </div>
-    </aside>
-
-    <section class="chat-area" aria-label="Chat with routine advisor">
-      <h2>About Your Routine</h2>
-      <div id="chatWindow" class="chat-window" role="log" aria-live="polite"></div>
-      <form id="chatForm" class="chat-form">
-        <input id="chatInput" placeholder="Ask about your routine..." aria-label="Ask about your routine" />
-        <button type="submit" title="Send">➤</button>
-      </form>
-    </section>
-  </main>
-
-  <template id="productCardTemplate">
-    <div class="product-card">
-      <div class="thumb"></div>
-      <div class="meta">
-        <div class="brand-name"></div>
-        <div class="product-name"></div>
-        <div class="product-desc-toggle" role="button" tabindex="0" aria-pressed="false">Details</div>
-      </div>
+  <section aria-labelledby="products-heading">
+    <div style="display:flex;gap:12px;align-items:center">
+      <input id="searchInput" placeholder="Search products (name, brand, keywords)" style="flex:1;padding:8px;border:1px solid #ddd;border-radius:6px" />
+      <select id="categoryFilter" style="padding:8px;border:1px solid #ddd;border-radius:6px">
+        <option value="all">All Categories</option>
+      </select>
+      <button id="clearBtn">Clear</button>
+      <button id="generateBtn">Generate Routine</button>
     </div>
-  </template>
 
-  <div id="modal" class="modal" aria-hidden="true" role="dialog">
-    <div class="modal-content">
-      <button id="modalClose" class="modal-close" aria-label="Close">✕</button>
-      <div id="modalBody"></div>
+    <div id="productGrid" aria-live="polite"></div>
+
+    <div id="selectedList" aria-live="polite">
+      <div class="muted">No products selected.</div>
+    </div>
+  </section>
+
+  <section aria-labelledby="chat-heading" style="margin-top:18px">
+    <h2 id="chat-heading">Chat / Assistant</h2>
+    <div id="chatWindow" role="log" aria-live="polite"></div>
+
+    <form id="chatForm" style="display:flex;gap:8px;margin-top:8px">
+      <input id="chatInput" placeholder="Ask a follow-up question…" style="flex:1;padding:8px;border:1px solid #ddd;border-radius:6px" />
+      <button type="submit">Send</button>
+    </form>
+  </section>
+
+  <!-- Modal -->
+  <div id="modal" aria-hidden="true">
+    <div id="modalBody" role="dialog" aria-modal="true">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div></div>
+        <button id="modalClose" aria-label="Close">Close</button>
+      </div>
+      <!-- details get injected into #modalBody by script.js -->
     </div>
   </div>
 
-  <script>
-    // Cloudflare Worker endpoint provided by you
-    const WORKER_URL = "https://openaiapikey.hangqi39.workers.dev";
-    window.__APP_CONFIG__ = { workerUrl: WORKER_URL };
-  </script>
+  <!-- Load the app script after config injection -->
   <script src="script.js"></script>
 </body>
 </html>
